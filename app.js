@@ -17,6 +17,8 @@
 
 const express = require('express');
 const app = express();
+const cors = require('cors');
+app.use(cors())
 
 app.get('/', (req, res) => {
  
@@ -33,9 +35,10 @@ app.get('/demo', (req, res) => {
 })
 
 app.get("/latlon", (req, res) => {
-  const street = req.query.street;
-  const city = req.query.city;
-  const state = req.query.state;
+  const street = req?.query?.street || '20+W+34th+St.';
+  const city = req?.query?.city || 'new+york';
+  const state = req?.query?.state || 'NY';
+  console.log(req.query)
   fetch(`https://geocoding.geo.census.gov/geocoder/geographies/address?street=${street}&city=${city}&state=${state}&benchmark=Public_AR_Census2020&vintage=Census2020_Census2020&layers=10&format=json`)
     .then(response => response.json())
     .then(data => res.send(data.result))
@@ -44,12 +47,14 @@ app.get("/latlon", (req, res) => {
 
 
 app.get("/weather", (req, res) => {
-  const lat = req.query.lat;
-  const lng = req.query.lng;
+  const lat = req.query.lat || '40.7';
+  const lng = req.query.lng || '-73.9';
   fetch(`https://api.weather.gov/points/${lat},${lng}`)
     .then(response => response.json()
       .then(response => {
-        const forecast = response.properties.forecast;
+        console.log("lat:", lat, "lng:", lng);
+        const forecast = response?.properties?.forecast;
+        console.log('forecast', forecast)
         fetch(forecast)
           .then(response => response.json())
           .then(data => {
