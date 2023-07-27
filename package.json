@@ -1,6 +1,5 @@
 {
   "scripts": {
-    "build": "netlify deploy --prod",
     "start": "node app.js"
   },
   "dependencies": {
