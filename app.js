@@ -4,8 +4,7 @@ const app = express();
 
 app.use(cors())
 
-app.get("/", (req, res) => {
-  console.log(req.query)
+app.get("/latlon", (req, res) => {
   const street = req.query.street;
   const city = req.query.city;
   const state = req.query.state;
@@ -13,6 +12,24 @@ app.get("/", (req, res) => {
     .then(response => response.json())
     .then(data => res.send(data.result))
     .catch(err => console.log('ERROR', err))
+})
+
+
+app.get("/weather", (req, res) => {
+  const lat = req.query.lat;
+  const lng = req.query.lng;
+  fetch(`https://api.weather.gov/points/${lat},${lng}`)
+    .then(response => response.json()
+      .then(response => {
+        const forecast = response.properties.forecast;
+        fetch(forecast)
+          .then(response => response.json())
+          .then(data => {
+            return res.send(data);
+          })
+          .catch(err => console.log('ERROR', err))
+      })
+    )
 })
 
 
