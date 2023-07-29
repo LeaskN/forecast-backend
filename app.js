@@ -36,6 +36,23 @@ app.get("/weather", (req, res) => {
     )
 })
 
+app.get("/dayWeather", (req, res) => {
+  const lat = req.query.lat || '40.7';
+  const lng = req.query.lng || '-73.9';
+  fetch(`https://api.weather.gov/points/${lat},${lng}`)
+    .then(response => response.json()
+      .then(response => {
+        const forecastHourly = response?.properties?.forecastHourly;
+        fetch(forecastHourly)
+          .then(response => response.json())
+          .then(data => {
+            return res.send(data)
+          })
+      })
+      .catch(err => console.log('ERROR', err))
+    )
+})
+
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, console.log(
